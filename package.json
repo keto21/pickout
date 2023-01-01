@@ -1,0 +1,43 @@
+{
+  "name": "pickout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "clean": "rm -rf .parcel-cache dist"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "keywords": [],
+  "author": "keto21",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint-config-prettier": "^8.5.0",
+    "parcel": "^2.8.2",
+    "parcel-bundler": "^1.12.5",
+    "prettier": "2.6.2",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.2",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^14.2.0",
+    "@types/jest": "^27.5.1",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recoil": "^0.7.6"
+  }
+}
