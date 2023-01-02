@@ -37,8 +37,6 @@ const EditorView = () => {
     }))
   }
 
-  const [openSnackbar, setOpenSnackbar] = useState(false)
-
   useEffect(() => {
     const updateDimensions = () => {
       setClientDimensions({
