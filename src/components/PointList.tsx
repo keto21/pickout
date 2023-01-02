@@ -8,15 +8,23 @@ import { useRecoilState } from 'recoil'
 import { pointDataState } from '../atoms'
 import { IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { EditableLabel } from './EditableLabel'
 
 const PointList = () => {
   const [pointData, setPointData] = useRecoilState(pointDataState)
 
   const handleDeletePoint =
     (id: number) => (_: React.MouseEvent<HTMLElement>) => {
-      console.log('delete' + id)
       setPointData(pointData.filter((point) => point.id !== id))
     }
+
+  const handleEditPoint = (id: number, value: string) => {
+    const newPointData = pointData.map((point) =>
+      point.id === id ? { ...point, name: value } : point
+    )
+    setPointData(newPointData)
+  }
 
   return (
     <>
@@ -29,12 +37,11 @@ const PointList = () => {
           </ListSubheader>
         }
       >
-        {pointData.map((point) => {
-          const labelId = `checkbox-list-secondary-label-${point.id}`
-          return (
-            <ListItem
-              key={point.id}
-              secondaryAction={
+        {pointData.map((point) => (
+          <ListItem
+            key={point.id}
+            secondaryAction={
+              <>
                 <IconButton
                   size="large"
                   aria-label="delete-button"
@@ -45,16 +52,22 @@ const PointList = () => {
                 >
                   <DeleteIcon />
                 </IconButton>
+              </>
+            }
+            divider
+          >
+            <ListItemText
+              primary={
+                <EditableLabel
+                  initialValue={point.name}
+                  onBlur={(value) => {
+                    handleEditPoint(point.id, value)
+                  }}
+                ></EditableLabel>
               }
-              disablePadding
-              divider
-            >
-              <ListItemButton>
-                <ListItemText id={labelId} primary={`${point.name}`} />
-              </ListItemButton>
-            </ListItem>
-          )
-        })}
+            ></ListItemText>
+          </ListItem>
+        ))}
       </List>
     </>
   )
