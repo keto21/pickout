@@ -16,7 +16,7 @@ const pages = ['Open File', 'Export Points']
 const settings = ['Whatever', 'No clue', 'Nope', 'Maybe']
 const title = 'Pickout'
 
-function ResponsiveAppBar() {
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
