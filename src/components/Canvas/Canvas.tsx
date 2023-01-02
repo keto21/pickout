@@ -145,27 +145,30 @@ const Canvas = (props: CanvasProps) => {
   )
 
   // Handle wheel events for zooming
-  const handleWheel = useCallback((event: WheelEvent) => {
-    event.preventDefault()
-    if (!context) return
-    if (!image) return
+  const handleWheel = useCallback(
+    (event: WheelEvent) => {
+      event.preventDefault()
+      if (!context) return
+      if (!image) return
 
-    if (event.deltaY === 0) return
+      if (event.deltaY === 0) return
 
-    const zoom = event.deltaY > 0 ? 0.9 : 1.1 // smaller than 0 means zoom out
+      const zoom = event.deltaY > 0 ? 0.9 : 1.1 // smaller than 0 means zoom out
 
-    const clientPoint = { x: event.clientX, y: event.clientY }
-    const transformedClientPoint = getTransformedPoint(context, clientPoint)
-    console.log(JSON.stringify(transformedClientPoint))
+      const clientPoint = { x: event.clientX, y: event.clientY }
+      const transformedClientPoint = getTransformedPoint(context, clientPoint)
+      console.log(JSON.stringify(transformedClientPoint))
 
-    context.translate(transformedClientPoint.x, transformedClientPoint.y)
-    context.scale(zoom, zoom)
-    context.translate(-transformedClientPoint.x, -transformedClientPoint.y)
+      context.translate(transformedClientPoint.x, transformedClientPoint.y)
+      context.scale(zoom, zoom)
+      context.translate(-transformedClientPoint.x, -transformedClientPoint.y)
 
-    setRedrawNeeded(true)
+      setRedrawNeeded(true)
 
-    isResetRef.current = false
-  }, [])
+      isResetRef.current = false
+    },
+    [context]
+  )
 
   // setup canvas and set context
   useLayoutEffect(() => {
@@ -217,7 +220,7 @@ const Canvas = (props: CanvasProps) => {
       if (canvasRef.current)
         canvasRef.current.removeEventListener('wheel', handleWheel)
     }
-  }, [])
+  }, [handleWheel])
 
   // Add event listener to add points
   useEffect(() => {
