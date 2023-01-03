@@ -10,25 +10,21 @@ import { activeToolState, pointDataState, snackbarState } from '../../atoms'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ToolId } from '../../tools'
 import {
-  addPoints,
   CanvasProps,
   diffPoints,
   getTransformedPoint,
+  ORIGIN,
   Point,
-  scalePoint,
 } from './CanvasHelper'
 import { Severity } from '../../types'
+import { SVGCanvas } from './SVGCanvas'
 
-const ORIGIN: Point = Object.freeze({ x: 0, y: 0 })
 const { devicePixelRatio: ratio = 1 } = window
-
-const MAX_SCALE = 5
-const MIN_SCALE = 0.05
-const ZOOM_SENSITIVITY = 500 // bigger for lower zoom per scroll
 
 const Canvas = (props: CanvasProps) => {
   const { canvasWidth, canvasHeight } = props
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [counter, setCounter] = useState(0)
 
@@ -107,7 +103,7 @@ const Canvas = (props: CanvasProps) => {
       if (!context) return
 
       const lastMousePos = lastMousePosRef.current
-      const currentMousePos = { x: event.offsetX, y: event.offsetY }
+      const currentMousePos = { x: event.pageX, y: event.pageY }
       lastMousePosRef.current = currentMousePos
 
       const tranformedLastMousePos = getTransformedPoint(context, lastMousePos)
@@ -136,7 +132,7 @@ const Canvas = (props: CanvasProps) => {
 
   // This event is added to the canvas event listener directly
   const startPan = useCallback(
-    (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       document.addEventListener('mousemove', mouseMove)
       document.addEventListener('mouseup', mouseUp)
       lastMousePosRef.current = { x: event.pageX, y: event.pageY }
@@ -170,10 +166,8 @@ const Canvas = (props: CanvasProps) => {
     [context]
   )
 
-  // setup canvas and set context
   useLayoutEffect(() => {
     if (canvasRef.current) {
-      // get new drawing context
       const renderCtx = canvasRef.current.getContext('2d')
 
       if (renderCtx) {
@@ -186,11 +180,11 @@ const Canvas = (props: CanvasProps) => {
   useLayoutEffect(() => {
     setRedrawNeeded(false)
     if (context) {
-      // Clear canvas but maintain transform
-      // Store the current transformation matrix
+      // Clear canvas but maintain transform.
+      // Store the current transformation matrix.
       context.save()
 
-      // Use the identity matrix while clearing the canvas
+      // Use the identity matrix while clearing the canvas.
       context.resetTransform()
       context.clearRect(0, 0, canvasWidth, canvasHeight)
 
@@ -199,32 +193,24 @@ const Canvas = (props: CanvasProps) => {
 
       // Draw image at the origin
       if (image) context.drawImage(image, 0, 0)
-
-      pointData.forEach((point) => {
-        context.beginPath()
-        context.arc(point.x, point.y, 25, 0, 2 * Math.PI)
-        context.stroke()
-        context.fill()
-        console.log(JSON.stringify(point))
-      })
     }
   }, [canvasWidth, canvasHeight, context, pointData, redrawNeeded])
 
   // Adds wheel event listener to handle zoom
   useEffect(() => {
-    if (!canvasRef.current) return
+    if (!containerRef.current) return
 
-    canvasRef.current.addEventListener('wheel', handleWheel)
+    containerRef.current.addEventListener('wheel', handleWheel)
 
     return () => {
-      if (canvasRef.current)
-        canvasRef.current.removeEventListener('wheel', handleWheel)
+      if (containerRef.current)
+        containerRef.current.removeEventListener('wheel', handleWheel)
     }
   }, [handleWheel])
 
   // Add event listener to add points
   useEffect(() => {
-    const canvasElem = canvasRef.current
+    const canvasElem = containerRef.current
     if (!canvasElem) return
     if (!context) return
     if (activeTool !== ToolId.ADD_POINT) return
@@ -249,15 +235,28 @@ const Canvas = (props: CanvasProps) => {
   }, [activeTool, counter])
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
+    <div
+      ref={containerRef}
+      onMouseDown={startPan}
+      style={{ position: 'fixed', top: 0, left: 0, zIndex: -1 }}
+    >
+      <SVGCanvas
+        canvasWidth={canvasWidth}
+        canvasHeight={canvasHeight}
+        context={context}
+        ratio={ratio}
+      ></SVGCanvas>
       <canvas
-        onMouseDown={startPan}
         ref={canvasRef}
         width={canvasWidth * ratio}
         height={canvasHeight * ratio}
         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
           width: `${canvasWidth}px`,
           height: `${canvasHeight}px`,
+          zIndex: 'inherit',
         }}
       ></canvas>
     </div>
