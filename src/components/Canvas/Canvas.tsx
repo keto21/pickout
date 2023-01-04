@@ -238,6 +238,7 @@ const Canvas = (props: CanvasProps) => {
         canvasHeight={canvasHeight}
         context={context}
         ratio={ratio}
+        disableEditing={activeTool !== ToolId.CURSOR}
       ></SVGCanvas>
       <canvas
         ref={canvasRef}

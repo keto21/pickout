@@ -10,7 +10,7 @@ import {
 } from './CanvasHelper'
 
 const SVGCanvas = (props: SVGCanvasProps) => {
-  const { canvasWidth, canvasHeight, context, ratio } = props
+  const { canvasWidth, canvasHeight, context, ratio, disableEditing } = props
 
   const [pointData, setPointData] = useRecoilState(pointDataState)
   const [dragPosition, setDragPosition] = useState(ORIGIN)
@@ -45,7 +45,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
           : oldPoint
       )
       setPointData(newPointData)
-      draggedItemRef.current = pointData.map((x) => false)
+      draggedItemRef.current = pointData.map(() => false)
 
       document.removeEventListener('mousemove', mouseMove)
       document.removeEventListener('mouseup', mouseUp)
@@ -56,10 +56,10 @@ const SVGCanvas = (props: SVGCanvasProps) => {
   // This event is added to the canvas event listener directly
   const startDrag = useCallback(
     (event: React.MouseEvent<SVGCircleElement, MouseEvent>) => {
+      if (disableEditing) return
       event.stopPropagation()
 
       setDragStarted(true)
-      console.log()
       dragStartPosRef.current = {
         x: event.currentTarget.cx.baseVal.value,
         y: event.currentTarget.cy.baseVal.value,
@@ -70,7 +70,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
       document.addEventListener('mousemove', mouseMove)
       document.addEventListener('mouseup', mouseUp)
     },
-    [mouseMove, mouseUp]
+    [mouseMove, mouseUp, disableEditing]
   )
 
   return (
@@ -104,7 +104,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
               )
               startDrag(event)
             }}
-            style={{ cursor: 'move' }}
+            style={{ cursor: disableEditing ? 'auto' : 'grab' }}
             key={`circle-${point.id}`}
             cx={`${transformedPoint.x}px`}
             cy={`${transformedPoint.y}px`}
@@ -113,7 +113,9 @@ const SVGCanvas = (props: SVGCanvasProps) => {
             strokeWidth={'3'}
             fill={'black'}
             fillOpacity={
-              draggedItemRef.current.length > 0 && draggedItemRef.current[idx]
+              !disableEditing &&
+              draggedItemRef.current.length > 0 &&
+              draggedItemRef.current[idx]
                 ? 0.2
                 : 1.0
             }
@@ -122,7 +124,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
       })}
       {dragStarted && (
         <circle
-          style={{ cursor: 'move' }}
+          style={{ cursor: disableEditing ? 'auto' : 'grabbing' }}
           key={`drag-circle}`}
           cx={`${dragPosition.x}px`}
           cy={`${dragPosition.y}px`}

@@ -11,6 +11,7 @@ export type SVGCanvasProps = {
   canvasHeight: number
   context: CanvasRenderingContext2D | null
   ratio: number
+  disableEditing: boolean
 }
 
 export type Point = {
