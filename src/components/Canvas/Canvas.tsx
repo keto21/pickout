@@ -72,35 +72,6 @@ const Canvas = (props: CanvasProps) => {
     }
   }, [fileData])
 
-  // reset
-  /*
-  const reset = useCallback(
-    (context: CanvasRenderingContext2D, forceReset = false) => {
-      if (context && (forceReset || !isResetRef.current)) {
-        console.log('reset')
-        // adjust for device pixel density
-        context.canvas.width = canvasWidth * ratio
-        context.canvas.height = canvasHeight * ratio
-        context.scale(ratio, ratio)
-
-        // To make sure that the image is centered, it needs to be translated correctly.
-        // So the image dimensions need to be known at that point.
-        // Also, the scale might need to be adjusted to cater for bigger images.
-        if (image) {
-        }
-
-        // reset state and refs
-        setContext(context)
-        lastMousePosRef.current = ORIGIN
-
-        // this thing is so multiple resets in a row don't clear canvas
-        isResetRef.current = true
-      }
-    },
-    [canvasWidth, canvasHeight, image, fileData]
-  )
-  */
-
   useLayoutEffect(() => {
     if (canvasRef.current) setContext(canvasRef.current.getContext('2d'))
   }, [canvasWidth, canvasHeight])
@@ -160,7 +131,6 @@ const Canvas = (props: CanvasProps) => {
 
       const clientPoint = { x: event.clientX, y: event.clientY }
       const transformedClientPoint = getTransformedPoint(context, clientPoint)
-      console.log(JSON.stringify(transformedClientPoint))
 
       context.translate(transformedClientPoint.x, transformedClientPoint.y)
       context.scale(zoom, zoom)
@@ -204,9 +174,6 @@ const Canvas = (props: CanvasProps) => {
 
           const translateX = (canvasWidth - 240) / 2 - w / 2
           const translateY = canvasHeight / 2 - h / 2
-          console.log(`image width: ${image.width}, height: ${image.height}`)
-
-          console.log(`translate by x: ${translateX}, y: ${translateY}`)
           context.translate(translateX, translateY)
         }
         setNewFileLoaded(false)

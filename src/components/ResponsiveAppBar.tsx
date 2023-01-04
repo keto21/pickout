@@ -26,10 +26,6 @@ const ResponsiveAppBar = () => {
   }
 
   const handleCloseNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    console.log('yes')
-
-    console.log(event.currentTarget)
-
     const selectedPage = event.currentTarget.textContent
     if (selectedPage === pages[0]) {
       // File Dialog

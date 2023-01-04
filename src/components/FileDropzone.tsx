@@ -20,7 +20,6 @@ interface FileDropzoneProps {
  */
 const fixSvgDimensions = (aDataURL: string) => {
   if (aDataURL.startsWith('data:image/svg')) {
-    console.log('svg found')
     const svgString = atob(aDataURL.replace(/data:image\/svg\+xml;base64,/, ''))
     const parser = new DOMParser()
     const svgElem = parser.parseFromString(
@@ -51,7 +50,6 @@ const fixSvgDimensions = (aDataURL: string) => {
       svgElem.setAttribute('height', viewBoxHeight)
 
       const svgData = new XMLSerializer().serializeToString(svgElem)
-      console.log(svgData)
       return 'data:image/svg+xml;base64,' + btoa(svgData)
     }
   }

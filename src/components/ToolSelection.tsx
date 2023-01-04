@@ -31,7 +31,6 @@ const ToolSelection = () => {
         value={activeTool}
         onChange={(_, newValue) => {
           setActiveTool(newValue)
-          console.log(newValue)
         }}
       >
         {tools.map((tool) => {
