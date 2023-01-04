@@ -10,8 +10,9 @@ A web-based 2D point picker
 - Visualize points as SVG elements that can be easily repositioned
 - Edit point name (-> click on name)
 - Being able to open custom images
+- Indicate active point in list and on canvas
 
 # To do
 
-- Indicate active point in list and on canvas
+- Add random colors and label of point name
 - Export points as CSV, JSON etc.
