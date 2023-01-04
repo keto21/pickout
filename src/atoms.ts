@@ -6,7 +6,17 @@ import {
   SnackbarData,
   ElementId,
   CanvasOptions,
+  ExportDialogData,
+  FileInfo,
 } from './types'
+
+const fileInfoState = atom<FileInfo>({
+  key: 'fileInfoState',
+  default: {
+    width: 0,
+    height: 0,
+  },
+})
 
 const activeToolState = atom<ToolId>({
   key: 'pointToolActiveState',
@@ -49,11 +59,20 @@ const fileDialogState = atom<FileDialogData>({
   },
 })
 
+const exportDialogState = atom<ExportDialogData>({
+  key: 'exportDialogState',
+  default: {
+    open: false,
+  },
+})
+
 export {
+  fileInfoState,
   activeToolState,
   pointDataState,
   snackbarState,
   fileDialogState,
+  exportDialogState,
   activeElementState,
   canvasOptionsState,
 }

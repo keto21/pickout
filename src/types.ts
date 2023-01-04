@@ -32,6 +32,15 @@ type FileDialogData = {
   fileExists: boolean
 }
 
+type FileInfo = {
+  width: number
+  height: number
+}
+
+type ExportDialogData = {
+  open: boolean
+}
+
 export type {
   ElementId,
   PointData,
@@ -39,5 +48,7 @@ export type {
   SnackbarData,
   Severity,
   FileDialogData,
+  ExportDialogData,
   CanvasOptions,
+  FileInfo,
 }

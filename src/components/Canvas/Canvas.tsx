@@ -6,7 +6,12 @@ import {
   useState,
 } from 'react'
 import * as React from 'react'
-import { activeToolState, pointDataState, snackbarState } from '../../atoms'
+import {
+  activeToolState,
+  fileInfoState,
+  pointDataState,
+  snackbarState,
+} from '../../atoms'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ToolId } from '../../tools'
 import {
@@ -56,6 +61,8 @@ const Canvas = (props: CanvasProps) => {
     ])
     setCounter((prev) => prev + 1)
   }
+
+  const [fileInfo, setFileInfo] = useRecoilState(fileInfoState)
 
   const [_, setSnackbarData] = useRecoilState(snackbarState)
   const showSnackbar = (severity: Severity, message: string) => {
@@ -165,6 +172,8 @@ const Canvas = (props: CanvasProps) => {
         context.drawImage(image, 0, 0)
         if (newFileLoaded) {
           context.resetTransform()
+
+          setFileInfo({ width: image.width, height: image.height })
 
           // TODO: Fix center calculation
           const scale = Math.min(
