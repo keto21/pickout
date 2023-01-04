@@ -5,7 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import { useRecoilState } from 'recoil'
-import { pointDataState } from '../atoms'
+import { pointDataState, activeElementState } from '../atoms'
 import { IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -26,19 +26,32 @@ const PointList = () => {
     setPointData(newPointData)
   }
 
+  const [activeElement, setActiveElement] = useRecoilState(activeElementState)
+
   return (
     <>
       <List
         dense
-        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+        sx={{ width: '100%', maxWidth: 360 }}
         subheader={
-          <ListSubheader sx={{ bgcolor: 'black', color: 'white' }}>
-            Points
+          <ListSubheader
+            sx={{ bgcolor: '#282828', color: 'white', position: 'sticky' }}
+          >
+            Created Points
           </ListSubheader>
         }
       >
         {pointData.map((point) => (
           <ListItem
+            sx={{
+              bgcolor: activeElement === point.id ? '#282828' : '#202020',
+            }}
+            onMouseOver={() => {
+              setActiveElement(point.id)
+            }}
+            onMouseLeave={() => {
+              setActiveElement(-1)
+            }}
             key={point.id}
             secondaryAction={
               <>
@@ -48,7 +61,7 @@ const PointList = () => {
                   aria-controls="delete-point-button"
                   aria-haspopup="true"
                   onClick={handleDeletePoint(point.id)}
-                  color="inherit"
+                  color="primary"
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -57,6 +70,7 @@ const PointList = () => {
             divider
           >
             <ListItemText
+              sx={{ color: 'white' }}
               primary={
                 <EditableLabel
                   initialValue={point.name}

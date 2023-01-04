@@ -8,6 +8,7 @@ const DEFAULT_LABEL_PLACEHOLDER = 'Click To Edit'
 const EditableLabel = ({
   onFocus = (value: string) => {},
   onBlur = (value: string) => {},
+  color = 'white',
   ...props
 }) => {
   const [isEditing, setEditing] = useState(false)
@@ -47,6 +48,7 @@ const EditableLabel = ({
           ref: inputRef,
           value,
         }}
+        sx={{ color: color }}
         onChange={handleChange}
         onBlur={handleFocus}
         onKeyDown={handleKeyDown}
@@ -59,7 +61,11 @@ const EditableLabel = ({
     ? value
     : props.labelPlaceHolder || DEFAULT_LABEL_PLACEHOLDER
 
-  return <InputLabel onClick={handleFocus}>{labelText}</InputLabel>
+  return (
+    <InputLabel sx={{ color: color }} onClick={handleFocus}>
+      {labelText}
+    </InputLabel>
+  )
 }
 
 export { EditableLabel }

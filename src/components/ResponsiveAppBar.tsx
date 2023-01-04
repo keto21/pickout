@@ -42,7 +42,7 @@ const ResponsiveAppBar = () => {
   return (
     <AppBar
       position="fixed"
-      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{ bgcolor: '#323232', zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>

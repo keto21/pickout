@@ -1,9 +1,11 @@
 type PointData = {
-  id: number
+  id: ElementId
   x: number
   y: number
   name: string
 }
+
+type ElementId = number
 
 type Tool = {
   id: number
@@ -25,4 +27,11 @@ type FileDialogData = {
   fileExists: boolean
 }
 
-export type { PointData, Tool, SnackbarData, Severity, FileDialogData }
+export type {
+  ElementId,
+  PointData,
+  Tool,
+  SnackbarData,
+  Severity,
+  FileDialogData,
+}

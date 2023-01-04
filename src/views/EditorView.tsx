@@ -65,13 +65,15 @@ const EditorView = () => {
         anchor="right"
         variant="permanent"
         sx={{
+          position: 'sticky',
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: 'border-box',
+            bgcolor: '#202020',
           },
-          zIndex: -1,
+          zIndex: 1,
         }}
       >
         <Toolbar />

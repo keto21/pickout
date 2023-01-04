@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { pointDataState } from '../../atoms'
+import { pointDataState, activeElementState } from '../../atoms'
 import {
   diffPoints,
   getUntransformedPoint,
@@ -20,6 +20,8 @@ const SVGCanvas = (props: SVGCanvasProps) => {
   const draggedItemRef = useRef<boolean[]>([])
   const dragStartPosRef = useRef<Point>(ORIGIN)
   const dragEndPosRef = useRef<Point>(ORIGIN)
+
+  const [activeElement, setActiveElement] = useRecoilState(activeElementState)
 
   const mouseMove = useCallback(
     (event: MouseEvent) => {
@@ -104,14 +106,20 @@ const SVGCanvas = (props: SVGCanvasProps) => {
               )
               startDrag(event)
             }}
+            onMouseOver={() => {
+              setActiveElement(point.id)
+            }}
+            onMouseLeave={() => {
+              setActiveElement(-1)
+            }}
             style={{ cursor: disableEditing ? 'auto' : 'grab' }}
             key={`circle-${point.id}`}
             cx={`${transformedPoint.x}px`}
             cy={`${transformedPoint.y}px`}
-            r="10px"
+            r={'10px'}
             stroke={'white'}
             strokeWidth={'3'}
-            fill={'black'}
+            fill={activeElement == point.id ? 'white' : 'black'}
             fillOpacity={
               !disableEditing &&
               draggedItemRef.current.length > 0 &&
