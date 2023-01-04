@@ -7,6 +7,7 @@ import {
 } from '../../atoms'
 import {
   diffPoints,
+  getTransformedPoint,
   getUntransformedPoint,
   ORIGIN,
   Point,
@@ -38,10 +39,21 @@ const SVGCanvas = (props: SVGCanvasProps) => {
 
   const mouseUp = useCallback(
     (event: MouseEvent) => {
+      if (!context) return
+
       dragEndPosRef.current = { x: event.pageX, y: event.pageY }
       setDragStarted(false)
 
-      const offset = diffPoints(dragEndPosRef.current, dragStartPosRef.current)
+      const transformedStartPos = getTransformedPoint(
+        context,
+        dragStartPosRef.current
+      )
+      const transformedEndPos = getTransformedPoint(
+        context,
+        dragEndPosRef.current
+      )
+
+      const offset = diffPoints(transformedEndPos, transformedStartPos)
       const newPointData = pointData.map((oldPoint, idx) =>
         draggedItemRef.current[idx]
           ? {
@@ -57,7 +69,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
       document.removeEventListener('mousemove', mouseMove)
       document.removeEventListener('mouseup', mouseUp)
     },
-    [mouseMove, pointData]
+    [mouseMove, context, pointData]
   )
 
   // This event is added to the canvas event listener directly
@@ -122,7 +134,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
               key={`circle-${point.id}`}
               cx={`${transformedPoint.x}px`}
               cy={`${transformedPoint.y}px`}
-              r={'8px'}
+              r={activeElement == point.id ? '14px' : '8px'}
               strokeOpacity={
                 !disableEditing &&
                 draggedItemRef.current.length > 0 &&
@@ -134,7 +146,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
               }
               stroke={'white'}
               strokeWidth={'2'}
-              fill={activeElement == point.id ? 'white' : point.color}
+              fill={point.color}
               fillOpacity={
                 !disableEditing &&
                 draggedItemRef.current.length > 0 &&
@@ -147,6 +159,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
             />
             {!hideLabels && (
               <text
+                key={`svg-text-${point.id}`}
                 style={{
                   font: 'bold 14px sans-serif',
                 }}
