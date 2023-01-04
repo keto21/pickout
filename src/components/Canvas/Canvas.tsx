@@ -12,6 +12,7 @@ import { ToolId } from '../../tools'
 import {
   CanvasProps,
   diffPoints,
+  generateColor,
   getTransformedPoint,
   ORIGIN,
   Point,
@@ -48,9 +49,10 @@ const Canvas = (props: CanvasProps) => {
 
   const [pointData, setPointData] = useRecoilState(pointDataState)
   const addPoint = (x: number, y: number, id: number) => {
+    console.log(generateColor(id))
     setPointData((oldPointData) => [
       ...oldPointData,
-      { x: x, y: y, id: id, name: 'POINT_' + id },
+      { x: x, y: y, id: id, name: 'POINT_' + id, color: generateColor(id) },
     ])
     setCounter((prev) => prev + 1)
   }

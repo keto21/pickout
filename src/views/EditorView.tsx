@@ -55,7 +55,7 @@ const EditorView = () => {
     }
   })
 
-  const drawerWidth = 240
+  const drawerWidth = 400
 
   return (
     <>

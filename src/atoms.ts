@@ -1,6 +1,12 @@
 import { atom } from 'recoil'
 import { ToolId } from './tools'
-import { FileDialogData, PointData, SnackbarData, ElementId } from './types'
+import {
+  FileDialogData,
+  PointData,
+  SnackbarData,
+  ElementId,
+  CanvasOptions,
+} from './types'
 
 const activeToolState = atom<ToolId>({
   key: 'pointToolActiveState',
@@ -15,6 +21,13 @@ const activeElementState = atom<ElementId>({
 const pointDataState = atom<PointData[]>({
   key: 'pointToolState',
   default: [],
+})
+
+const canvasOptionsState = atom<CanvasOptions>({
+  key: 'canvasOptionsState',
+  default: {
+    hideLabels: false,
+  },
 })
 
 const snackbarState = atom<SnackbarData>({
@@ -42,4 +55,5 @@ export {
   snackbarState,
   fileDialogState,
   activeElementState,
+  canvasOptionsState,
 }

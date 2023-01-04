@@ -1,6 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
-import { useRecoilState } from 'recoil'
-import { pointDataState, activeElementState } from '../../atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import {
+  pointDataState,
+  activeElementState,
+  canvasOptionsState,
+} from '../../atoms'
 import {
   diffPoints,
   getUntransformedPoint,
@@ -22,6 +26,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
   const dragEndPosRef = useRef<Point>(ORIGIN)
 
   const [activeElement, setActiveElement] = useRecoilState(activeElementState)
+  const { hideLabels } = useRecoilValue(canvasOptionsState)
 
   const mouseMove = useCallback(
     (event: MouseEvent) => {
@@ -99,35 +104,62 @@ const SVGCanvas = (props: SVGCanvasProps) => {
         })
 
         return (
-          <circle
-            onMouseDown={(event) => {
-              draggedItemRef.current = pointData.map(
-                (_, index) => idx === index
-              )
-              startDrag(event)
-            }}
-            onMouseOver={() => {
-              setActiveElement(point.id)
-            }}
-            onMouseLeave={() => {
-              setActiveElement(-1)
-            }}
-            style={{ cursor: disableEditing ? 'auto' : 'grab' }}
-            key={`circle-${point.id}`}
-            cx={`${transformedPoint.x}px`}
-            cy={`${transformedPoint.y}px`}
-            r={'10px'}
-            stroke={'white'}
-            strokeWidth={'3'}
-            fill={activeElement == point.id ? 'white' : 'black'}
-            fillOpacity={
-              !disableEditing &&
-              draggedItemRef.current.length > 0 &&
-              draggedItemRef.current[idx]
-                ? 0.2
-                : 1.0
-            }
-          />
+          <>
+            <circle
+              onMouseDown={(event) => {
+                draggedItemRef.current = pointData.map(
+                  (_, index) => idx === index
+                )
+                startDrag(event)
+              }}
+              onMouseOver={() => {
+                setActiveElement(point.id)
+              }}
+              onMouseLeave={() => {
+                setActiveElement(-1)
+              }}
+              style={{ cursor: disableEditing ? 'auto' : 'grab' }}
+              key={`circle-${point.id}`}
+              cx={`${transformedPoint.x}px`}
+              cy={`${transformedPoint.y}px`}
+              r={'8px'}
+              strokeOpacity={
+                !disableEditing &&
+                draggedItemRef.current.length > 0 &&
+                draggedItemRef.current[idx]
+                  ? 0.2
+                  : activeElement >= 0 && activeElement !== point.id
+                  ? 0.3
+                  : 0.7
+              }
+              stroke={'white'}
+              strokeWidth={'2'}
+              fill={activeElement == point.id ? 'white' : point.color}
+              fillOpacity={
+                !disableEditing &&
+                draggedItemRef.current.length > 0 &&
+                draggedItemRef.current[idx]
+                  ? 0.2
+                  : activeElement >= 0 && activeElement !== point.id
+                  ? 0.3
+                  : 0.7
+              }
+            />
+            {!hideLabels && (
+              <text
+                style={{
+                  font: 'bold 14px sans-serif',
+                }}
+                fill={'white'}
+                stroke={'black'}
+                strokeWidth={'1px'}
+                x={transformedPoint.x - 30}
+                y={transformedPoint.y + 20}
+              >
+                {point.name}
+              </text>
+            )}
+          </>
         )
       })}
       {dragStarted && (

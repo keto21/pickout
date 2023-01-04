@@ -3,6 +3,11 @@ type PointData = {
   x: number
   y: number
   name: string
+  color: string
+}
+
+type CanvasOptions = {
+  hideLabels: boolean
 }
 
 type ElementId = number
@@ -34,4 +39,5 @@ export type {
   SnackbarData,
   Severity,
   FileDialogData,
+  CanvasOptions,
 }
