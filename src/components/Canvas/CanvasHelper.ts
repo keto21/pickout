@@ -3,6 +3,7 @@ export const ORIGIN: Point = Object.freeze({ x: 0, y: 0 })
 export type CanvasProps = {
   canvasWidth: number
   canvasHeight: number
+  fileData: string | null
 }
 
 export type SVGCanvasProps = {

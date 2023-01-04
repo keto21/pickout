@@ -8,9 +8,10 @@ import Drawer from '@mui/material/Drawer'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Snackbar from '@mui/material/Snackbar'
-import { useRecoilState } from 'recoil'
-import { snackbarState } from '../atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { snackbarState, fileDialogState } from '../atoms'
 import Alert from '@mui/material/Alert'
+import { FileDialog } from '../components/FileDialog'
 
 type Dimensions = {
   width: number
@@ -24,6 +25,9 @@ const EditorView = () => {
   })
 
   const [snackbarData, setSnackbarData] = useRecoilState(snackbarState)
+  const fileDialogData = useRecoilValue(fileDialogState)
+
+  const [fileDataUrl, setFileDataUrl] = useState<string | null>(null)
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -76,6 +80,7 @@ const EditorView = () => {
       </Drawer>
       <ToolSelection />
       <Canvas
+        fileData={fileDataUrl}
         canvasHeight={clientDimensions.height}
         canvasWidth={clientDimensions.width}
       ></Canvas>
@@ -96,6 +101,12 @@ const EditorView = () => {
           {snackbarData.message}
         </Alert>
       </Snackbar>
+      <FileDialog
+        open={fileDialogData.open}
+        onClose={(newFileData: string | null) => {
+          setFileDataUrl(newFileData)
+        }}
+      />
     </>
   )
 }

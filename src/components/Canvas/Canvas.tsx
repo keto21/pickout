@@ -22,7 +22,7 @@ import { SVGCanvas } from './SVGCanvas'
 const { devicePixelRatio: ratio = 1 } = window
 
 const Canvas = (props: CanvasProps) => {
-  const { canvasWidth, canvasHeight } = props
+  const { canvasWidth, canvasHeight, fileData } = props
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -31,7 +31,15 @@ const Canvas = (props: CanvasProps) => {
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null)
   const [redrawNeeded, setRedrawNeeded] = useState(false)
 
-  const [image, setImage] = useState<HTMLImageElement | null>(new Image())
+  const [image, setImage] = useState<HTMLImageElement>(new Image())
+  const [newFileLoaded, setNewFileLoaded] = useState(false)
+
+  const imageOnLoad = useCallback(() => {
+    if (!context || !image) return
+    setNewFileLoaded(true)
+    setRedrawNeeded(true)
+  }, [context, image, fileData])
+  image.onload = imageOnLoad
 
   const isResetRef = useRef<boolean>(false)
   const lastMousePosRef = useRef<Point>(ORIGIN)
@@ -59,17 +67,17 @@ const Canvas = (props: CanvasProps) => {
 
   // Load background image
   useEffect(() => {
-    if (image) {
-      // TODO: Switch out with dynamic image src
-      image.src =
-        'https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg'
+    if (image && fileData) {
+      image.src = fileData
     }
-  }, [])
+  }, [fileData])
 
   // reset
+  /*
   const reset = useCallback(
-    (context: CanvasRenderingContext2D) => {
-      if (context && !isResetRef.current) {
+    (context: CanvasRenderingContext2D, forceReset = false) => {
+      if (context && (forceReset || !isResetRef.current)) {
+        console.log('reset')
         // adjust for device pixel density
         context.canvas.width = canvasWidth * ratio
         context.canvas.height = canvasHeight * ratio
@@ -79,11 +87,6 @@ const Canvas = (props: CanvasProps) => {
         // So the image dimensions need to be known at that point.
         // Also, the scale might need to be adjusted to cater for bigger images.
         if (image) {
-          context.translate(
-            canvasWidth * (image.width / canvasWidth),
-            canvasHeight * (image.height / canvasHeight)
-          )
-          console.log(image.width)
         }
 
         // reset state and refs
@@ -94,8 +97,13 @@ const Canvas = (props: CanvasProps) => {
         isResetRef.current = true
       }
     },
-    [canvasWidth, canvasHeight, image]
+    [canvasWidth, canvasHeight, image, fileData]
   )
+  */
+
+  useLayoutEffect(() => {
+    if (canvasRef.current) setContext(canvasRef.current.getContext('2d'))
+  }, [canvasWidth, canvasHeight])
 
   // Update offset while move mouse event is active.
   const mouseMove = useCallback(
@@ -145,7 +153,6 @@ const Canvas = (props: CanvasProps) => {
     (event: WheelEvent) => {
       event.preventDefault()
       if (!context) return
-      if (!image) return
 
       if (event.deltaY === 0) return
 
@@ -166,16 +173,6 @@ const Canvas = (props: CanvasProps) => {
     [context]
   )
 
-  useLayoutEffect(() => {
-    if (canvasRef.current) {
-      const renderCtx = canvasRef.current.getContext('2d')
-
-      if (renderCtx) {
-        reset(renderCtx)
-      }
-    }
-  }, [reset, canvasHeight, canvasWidth])
-
   // Draw
   useLayoutEffect(() => {
     setRedrawNeeded(false)
@@ -192,9 +189,38 @@ const Canvas = (props: CanvasProps) => {
       context.restore()
 
       // Draw image at the origin
-      if (image) context.drawImage(image, 0, 0)
+      if (image) {
+        context.drawImage(image, 0, 0)
+        if (newFileLoaded) {
+          context.resetTransform()
+
+          // TODO: Fix center calculation
+          const scale = Math.min(
+            (canvasWidth - 240) / image.width,
+            canvasHeight / image.height
+          )
+          const w = image.width * scale
+          const h = image.height * scale
+
+          const translateX = (canvasWidth - 240) / 2 - w / 2
+          const translateY = canvasHeight / 2 - h / 2
+          console.log(`image width: ${image.width}, height: ${image.height}`)
+
+          console.log(`translate by x: ${translateX}, y: ${translateY}`)
+          context.translate(translateX, translateY)
+        }
+        setNewFileLoaded(false)
+      }
     }
-  }, [canvasWidth, canvasHeight, context, pointData, redrawNeeded])
+  }, [
+    canvasWidth,
+    canvasHeight,
+    context,
+    pointData,
+    redrawNeeded,
+    newFileLoaded,
+    fileData,
+  ])
 
   // Adds wheel event listener to handle zoom
   useEffect(() => {

@@ -20,4 +20,9 @@ type SnackbarData = {
   horizontal: 'left' | 'right' | 'center'
 }
 
-export type { PointData, Tool, SnackbarData, Severity }
+type FileDialogData = {
+  open: boolean
+  fileExists: boolean
+}
+
+export type { PointData, Tool, SnackbarData, Severity, FileDialogData }
