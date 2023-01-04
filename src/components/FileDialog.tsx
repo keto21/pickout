@@ -26,8 +26,17 @@ const FileDialog = (props: FileDialogProps) => {
   }
 
   return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Open File</DialogTitle>
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      PaperProps={{
+        style: {
+          backgroundColor: '#444',
+          boxShadow: 'none',
+        },
+      }}
+    >
+      <DialogTitle sx={{ color: 'white' }}>Open File</DialogTitle>
       <FileDropzone onClose={onClose} />
     </Dialog>
   )
