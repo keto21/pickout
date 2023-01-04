@@ -59,8 +59,13 @@ const SVGCanvas = (props: SVGCanvasProps) => {
       event.stopPropagation()
 
       setDragStarted(true)
-      dragStartPosRef.current = { x: event.pageX, y: event.pageY }
+      console.log()
+      dragStartPosRef.current = {
+        x: event.currentTarget.cx.baseVal.value,
+        y: event.currentTarget.cy.baseVal.value,
+      }
       dragEndPosRef.current = { x: event.pageX, y: event.pageY }
+      setDragPosition(dragEndPosRef.current)
 
       document.addEventListener('mousemove', mouseMove)
       document.addEventListener('mouseup', mouseUp)
