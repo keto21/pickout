@@ -2,10 +2,9 @@
   "name": "pickout",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html --public-url ./",
     "clean": "rm -rf .parcel-cache dist"
   },
   "eslintConfig": {
@@ -17,10 +16,14 @@
   "keywords": [],
   "author": "keto21",
   "license": "ISC",
+  "engines": {
+    "parcel": "2.x"
+  },
   "devDependencies": {
+    "@parcel/compressor-brotli": "^2.8.2",
+    "@parcel/compressor-gzip": "^2.8.2",
     "eslint-config-prettier": "^8.5.0",
     "parcel": "^2.8.2",
-    "parcel-bundler": "^1.12.5",
     "prettier": "2.6.2",
     "typescript": "^4.9.4"
   },
