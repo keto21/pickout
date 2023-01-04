@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useRecoilState } from 'recoil'
-import { fileDialogState } from '../atoms'
+import { exportDialogState, fileDialogState } from '../atoms'
 
 const pages = ['File', 'Export']
 const settings = ['Whatever', 'No clue', 'Nope', 'Maybe']
@@ -32,12 +32,15 @@ const ResponsiveAppBar = () => {
       setFileDialogData({ ...fileDialogData, open: true })
     } else if (selectedPage === pages[1]) {
       // Export Dialog
+      setExportDialogData({ ...exportDialogData, open: true })
     }
 
     setAnchorElNav(null)
   }
 
   const [fileDialogData, setFileDialogData] = useRecoilState(fileDialogState)
+  const [exportDialogData, setExportDialogData] =
+    useRecoilState(exportDialogState)
 
   return (
     <AppBar

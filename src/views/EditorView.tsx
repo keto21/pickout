@@ -9,9 +9,10 @@ import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Snackbar from '@mui/material/Snackbar'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { snackbarState, fileDialogState } from '../atoms'
+import { snackbarState, fileDialogState, exportDialogState } from '../atoms'
 import Alert from '@mui/material/Alert'
 import { FileDialog } from '../components/FileDialog'
+import { ExportDialog } from '../components/ExportDialog'
 
 type Dimensions = {
   width: number
@@ -25,7 +26,9 @@ const EditorView = () => {
   })
 
   const [snackbarData, setSnackbarData] = useRecoilState(snackbarState)
+
   const fileDialogData = useRecoilValue(fileDialogState)
+  const exportDialogData = useRecoilValue(exportDialogState)
 
   const [fileDataUrl, setFileDataUrl] = useState<string | null>(null)
 
@@ -109,6 +112,7 @@ const EditorView = () => {
           setFileDataUrl(newFileData)
         }}
       />
+      <ExportDialog open={exportDialogData.open} onClose={() => {}} />
     </>
   )
 }
