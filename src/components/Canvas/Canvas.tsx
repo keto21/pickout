@@ -138,7 +138,7 @@ const Canvas = (props: CanvasProps) => {
 
       const zoom = event.deltaY > 0 ? 0.9 : 1.1 // smaller than 0 means zoom out
 
-      const clientPoint = { x: event.clientX, y: event.clientY }
+      const clientPoint = { x: event.clientX * ratio, y: event.clientY * ratio }
       const transformedClientPoint = getTransformedPoint(context, clientPoint)
 
       context.translate(transformedClientPoint.x, transformedClientPoint.y)
@@ -149,12 +149,16 @@ const Canvas = (props: CanvasProps) => {
 
       isResetRef.current = false
     },
-    [context]
+    [context, ratio]
   )
 
   // Draw
   useLayoutEffect(() => {
     setRedrawNeeded(false)
+
+    const actualWidth = canvasWidth * ratio
+    const actualHeight = canvasHeight * ratio
+
     if (context) {
       // Clear canvas but maintain transform.
       // Store the current transformation matrix.
@@ -162,7 +166,8 @@ const Canvas = (props: CanvasProps) => {
 
       // Use the identity matrix while clearing the canvas.
       context.resetTransform()
-      context.clearRect(0, 0, canvasWidth, canvasHeight)
+
+      context.clearRect(0, 0, actualWidth, actualHeight)
 
       // Restore the transform
       context.restore()
@@ -176,16 +181,11 @@ const Canvas = (props: CanvasProps) => {
           setFileInfo({ width: image.width, height: image.height })
 
           // TODO: Fix center calculation
-          const scale = Math.min(
-            (canvasWidth - 240) / image.width,
-            canvasHeight / image.height
-          )
-          const w = image.width * scale
-          const h = image.height * scale
-
-          const translateX = (canvasWidth - 240) / 2 - w / 2
-          const translateY = canvasHeight / 2 - h / 2
+          const translateX = (actualWidth - 450 * ratio) / 2 - image.width / 2
+          const translateY = (actualHeight - 120 * ratio) / 2 - image.height / 2
           context.translate(translateX, translateY)
+
+          context.scale(ratio, ratio)
         }
         setNewFileLoaded(false)
       }
@@ -193,6 +193,7 @@ const Canvas = (props: CanvasProps) => {
   }, [
     canvasWidth,
     canvasHeight,
+    ratio,
     context,
     pointData,
     redrawNeeded,
