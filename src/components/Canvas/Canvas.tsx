@@ -54,7 +54,6 @@ const Canvas = (props: CanvasProps) => {
 
   const [pointData, setPointData] = useRecoilState(pointDataState)
   const addPoint = (x: number, y: number, id: number) => {
-    console.log(generateColor(id))
     setPointData((oldPointData) => [
       ...oldPointData,
       { x: x, y: y, id: id, name: 'POINT_' + id, color: generateColor(id) },
@@ -91,7 +90,7 @@ const Canvas = (props: CanvasProps) => {
       if (!context) return
 
       const lastMousePos = lastMousePosRef.current
-      const currentMousePos = { x: event.pageX, y: event.pageY }
+      const currentMousePos = { x: event.pageX * ratio, y: event.pageY * ratio }
       lastMousePosRef.current = currentMousePos
 
       const tranformedLastMousePos = getTransformedPoint(context, lastMousePos)
@@ -223,8 +222,8 @@ const Canvas = (props: CanvasProps) => {
     const handleMouseClick = (event: MouseEvent) => {
       if (canvasRef.current) {
         const clientPoint = {
-          x: event.clientX,
-          y: event.clientY,
+          x: event.clientX * ratio,
+          y: event.clientY * ratio,
         }
         const transformedClientPoint = getTransformedPoint(context, clientPoint)
         addPoint(transformedClientPoint.x, transformedClientPoint.y, counter)

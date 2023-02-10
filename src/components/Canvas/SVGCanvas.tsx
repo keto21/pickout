@@ -98,7 +98,7 @@ const SVGCanvas = (props: SVGCanvasProps) => {
       version="1.1"
       width={canvasWidth}
       height={canvasHeight}
-      viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
+      viewBox={`0 0 ${canvasWidth * ratio} ${canvasHeight * ratio}`}
       style={{
         top: 0,
         left: 0,
