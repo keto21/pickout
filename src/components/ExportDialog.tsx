@@ -2,8 +2,8 @@ import * as React from 'react'
 import Button from '@mui/material/Button'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { exportDialogState, fileInfoState, pointDataState } from '../atoms'
+import { useRecoilValue } from 'recoil'
+import { fileInfoState, pointDataState } from '../atoms'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -15,7 +15,7 @@ import { useCallback, useState } from 'react'
 
 interface ExportDialogProps {
   open: boolean
-  onClose: (fileData: string | null) => void
+  onClose: () => void
 }
 
 type ExportFormat = 'CSV' | 'JSON'
@@ -23,7 +23,6 @@ type ExportCoordinates = 'relative' | 'absolute'
 
 const ExportDialog = (props: ExportDialogProps) => {
   const { onClose, open } = props
-  const [dialogData, setDialogData] = useRecoilState(exportDialogState)
 
   const [fileFormat, setFileFormat] = useState<ExportFormat>('CSV')
   const [coordinateFormat, setCoordinateFormat] =
@@ -31,10 +30,6 @@ const ExportDialog = (props: ExportDialogProps) => {
 
   const pointData = useRecoilValue(pointDataState)
   const fileInfo = useRecoilValue(fileInfoState)
-
-  const handleClose = () => {
-    setDialogData({ ...dialogData, open: false })
-  }
 
   const createExportFile = useCallback(() => {
     const cleanPointData = pointData.map((point) => ({
@@ -60,7 +55,7 @@ const ExportDialog = (props: ExportDialogProps) => {
         'x',
         'y',
       ].join(',')}\n${cleanPointData
-        .map((p) => [p.id, p.x, p.y].join(','))
+        .map((p) => [p.id, p.name, p.x, p.y].join(','))
         .join('\n')}`
 
       fileURI = encodeURI(csvContent)
@@ -77,7 +72,7 @@ const ExportDialog = (props: ExportDialogProps) => {
 
   return (
     <Dialog
-      onClose={handleClose}
+      onClose={onClose}
       open={open}
       PaperProps={{
         style: {

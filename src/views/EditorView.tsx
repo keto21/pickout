@@ -9,10 +9,11 @@ import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Snackbar from '@mui/material/Snackbar'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { snackbarState, fileDialogState, exportDialogState } from '../atoms'
+import { snackbarState, dialogState } from '../atoms'
 import Alert from '@mui/material/Alert'
 import { FileDialog } from '../components/FileDialog'
 import { ExportDialog } from '../components/ExportDialog'
+import { fixSvgDimensions } from '../util'
 
 type Dimensions = {
   width: number
@@ -27,8 +28,7 @@ const EditorView = () => {
 
   const [snackbarData, setSnackbarData] = useRecoilState(snackbarState)
 
-  const fileDialogData = useRecoilValue(fileDialogState)
-  const exportDialogData = useRecoilValue(exportDialogState)
+  const [dialogData, setDialogData] = useRecoilState(dialogState)
 
   const [fileDataUrl, setFileDataUrl] = useState<string | null>(null)
 
@@ -107,12 +107,73 @@ const EditorView = () => {
         </Alert>
       </Snackbar>
       <FileDialog
-        open={fileDialogData.open}
-        onClose={(newFileData: string | null) => {
-          setFileDataUrl(newFileData)
+        open={dialogData.fileDialogOpen}
+        onClose={() => {
+          setDialogData({ ...dialogData, fileDialogOpen: false })
+        }}
+        accept={{
+          'image/*': ['.png', '.jpg', '.jpeg', '.JPG', '.svg', '.SVG'],
+        }}
+        onDrop={(acceptedFiles: any[]) => {
+          {
+            acceptedFiles.forEach((file) => {
+              const reader = new FileReader()
+
+              reader.onabort = () => console.log('file reading was aborted')
+              reader.onerror = () => console.log('file reading has failed')
+              reader.onload = () => {
+                // Do whatever you want with the file contents
+                let dataURL = reader.result
+
+                if (typeof dataURL === 'string') {
+                  dataURL = fixSvgDimensions(dataURL)
+                  setFileDataUrl(dataURL)
+                } else {
+                  setFileDataUrl(null)
+                }
+              }
+              reader.readAsDataURL(file)
+            })
+          }
         }}
       />
-      <ExportDialog open={exportDialogData.open} onClose={() => {}} />
+      <FileDialog
+        open={dialogData.importDialogOpen}
+        onClose={() => {
+          setDialogData({ ...dialogData, importDialogOpen: false })
+        }}
+        accept={{
+          'image/*': ['.png', '.jpg', '.jpeg', '.JPG', '.svg', '.SVG'],
+        }}
+        onDrop={(acceptedFiles: any[]) => {
+          {
+            acceptedFiles.forEach((file) => {
+              const reader = new FileReader()
+
+              reader.onabort = () => console.log('file reading was aborted')
+              reader.onerror = () => console.log('file reading has failed')
+              reader.onload = () => {
+                // Do whatever you want with the file contents
+                let dataURL = reader.result
+
+                if (typeof dataURL === 'string') {
+                  dataURL = fixSvgDimensions(dataURL)
+                  setFileDataUrl(dataURL)
+                } else {
+                  setFileDataUrl(null)
+                }
+              }
+              reader.readAsDataURL(file)
+            })
+          }
+        }}
+      />
+      <ExportDialog
+        open={dialogData.exportDialogOpen}
+        onClose={() => {
+          setDialogData({ ...dialogData, exportDialogOpen: false })
+        }}
+      />
     </>
   )
 }

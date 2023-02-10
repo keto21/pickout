@@ -1,12 +1,11 @@
 import { atom } from 'recoil'
 import { ToolId } from './tools'
 import {
-  FileDialogData,
+  DialogData,
   PointData,
   SnackbarData,
   ElementId,
   CanvasOptions,
-  ExportDialogData,
   FileInfo,
 } from './types'
 
@@ -51,18 +50,13 @@ const snackbarState = atom<SnackbarData>({
   },
 })
 
-const fileDialogState = atom<FileDialogData>({
-  key: 'fileDialogState',
+const dialogState = atom<DialogData>({
+  key: 'dialogState',
   default: {
     fileExists: false,
-    open: false,
-  },
-})
-
-const exportDialogState = atom<ExportDialogData>({
-  key: 'exportDialogState',
-  default: {
-    open: false,
+    fileDialogOpen: false,
+    importDialogOpen: false,
+    exportDialogOpen: false,
   },
 })
 
@@ -71,8 +65,7 @@ export {
   activeToolState,
   pointDataState,
   snackbarState,
-  fileDialogState,
-  exportDialogState,
+  dialogState,
   activeElementState,
   canvasOptionsState,
 }

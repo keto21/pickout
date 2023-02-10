@@ -27,18 +27,16 @@ type SnackbarData = {
   horizontal: 'left' | 'right' | 'center'
 }
 
-type FileDialogData = {
-  open: boolean
+type DialogData = {
+  fileDialogOpen: boolean
   fileExists: boolean
+  exportDialogOpen: boolean
+  importDialogOpen: boolean
 }
 
 type FileInfo = {
   width: number
   height: number
-}
-
-type ExportDialogData = {
-  open: boolean
 }
 
 export type {
@@ -47,8 +45,7 @@ export type {
   Tool,
   SnackbarData,
   Severity,
-  FileDialogData,
-  ExportDialogData,
+  DialogData,
   CanvasOptions,
   FileInfo,
 }
